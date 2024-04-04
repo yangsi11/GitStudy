@@ -1,0 +1,72 @@
+## SpringBoot中的疑难杂症
+
+`@RequestMapping` 和 `@RestController` 都是 Spring Framework 中用于处理 HTTP 请求的注解。
+
+### 1.RequestMapping:
+
+- `@RequestMapping` 用于定义一个或多个 HTTP 请求类型（如 GET、POST、PUT、DELETE 等）与一个 URL 模式的映射。
+- 它可以用于类级别或方法级别。当它被用于类级别时，它定义了该类中所有方法的请求映射。
+- 例如，你可以使用 `@RequestMapping(value = "local:host/example", method = RequestMethod.GET)` 来映射一个 HTTP GET 请求到 `/example` URL。
+
+
+
+### 2.RestController:
+
+- `@RestController` 是 `@Controller` 和 `@ResponseBody` 的组合。它自动将返回的对象转换为 JSON 或其他适当的格式。
+- 通常，在 RESTful Web 服务中，你不需要在每个响应上手动设置 `responseBody`，而 `@RestController` 注解为你处理了这些。
+- 当你在方法上使用 `@GetMapping`, `@PostMapping`, `@PutMapping`, `@DeleteMapping` 等注解时，你可以省略 `responseBody`，因为 `@RestController` 会自动为你处理。
+- 例如，你可以使用 `@GetMapping("/example")` 在一个 `@RestController` 中，并返回一个对象，该对象会自动转换为 JSON 格式。
+
+总结：
+
+- `@RequestMapping` 是用来定义 HTTP 请求的 URL 映射的。
+- `@RestController` 是简化 RESTful Web 服务开发的一个工具，它使得返回的对象自动转换为 JSON 或其他格式。
+
+
+
+
+
+
+
+### 3.HelloWorld
+
+```java
+//自动装配
+@Controller
+@RestController
+public class HelloController {
+    //http://localhost:8081/hello,接口
+    @GetMapping("/hello")
+    @ResponseBody
+        public String hello(){
+            //条调用业务接受前端的参数
+        return "hello,World";
+        }
+}
+```
+
+1. **@Controller** 和 **@RestController**:
+	- 这两个注解是Spring框架提供的，用于标记这个类为控制器类。
+	- `@Controller`是传统的MVC控制器，通常与`@ModelAttribute`和`@RequestMapping`等注解一起使用。
+	- `@RestController`是更现代的替代品，它结合了`@Controller`和`@ResponseBody`的功能。由于`@RestController`注解自动将方法的返回值转换为JSON或其他适当的格式，因此通常在RESTful Web服务中更常用。
+2. **public class HelloController**:
+	- 这是定义一个名为`HelloController`的公共类。
+3. **@GetMapping("/hello")**:
+	- 这个注解用于映射HTTP GET请求到`/hello` URL到下面的`hello()`方法。
+4. **public String hello()**:
+	- 这是一个公共方法，返回一个字符串。
+5. **@ResponseBody**:
+	- 这个注解告诉Spring将方法的返回值直接写入HTTP响应体，而不是将其解析为视图名称。与`@RestController`一起使用时，这个注解是多余的，但在这里它是必要的，因为`@Controller`不会自动这样做。
+6. **return "hello,World";**:
+	- 这行代码返回一个字符串"hello,World"。
+
+综上所述，当你在浏览器或其他HTTP客户端发送一个GET请求到`http://localhost:8081/hello`时，这个控制器会响应并返回"hello,World"。
+
+
+
+`@GetMapping` 和 `@RequestMapping` 在Spring MVC中是等同的，它们都是用于映射HTTP请求的注解。
+
+- `@GetMapping` 是一个特定于HTTP GET请求的注解，它是 `@RequestMapping` 的一个特化形式。
+- `@RequestMapping` 则更通用，可以用于处理所有类型的HTTP请求（GET、POST、PUT、DELETE等）。
+
+因此，在大多数情况下，你可以使用 `@GetMapping` 来简化代码，因为它已经特化了HTTP GET请求的处理。但在需要处理多种类型的HTTP请求时，或者当你想要使用更复杂的映射条件时，`@RequestMapping` 可能是更好的选择。
